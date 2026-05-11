@@ -166,7 +166,7 @@ const PerformanceAttribution: React.FC = () => {
               } 
               value={1.1245} 
               precision={4} 
-              styles={{ content: { color: '#023D7F' } }} 
+              valueStyle={{ color: '#023D7F' }} 
             />
           </Card>
         </Col>
@@ -181,7 +181,7 @@ const PerformanceAttribution: React.FC = () => {
               } 
               value={0.85} 
               precision={2} 
-              styles={{ content: { color: '#BC4736' } }} 
+              valueStyle={{ color: '#BC4736' }} 
               prefix={<ArrowUpOutlined />} 
               suffix="%" 
             />
@@ -198,7 +198,7 @@ const PerformanceAttribution: React.FC = () => {
               } 
               value={12.45} 
               precision={2} 
-              styles={{ content: { color: '#BC4736' } }} 
+              valueStyle={{ color: '#BC4736' }} 
               prefix={<ArrowUpOutlined />} 
               suffix="%" 
             />
@@ -215,7 +215,7 @@ const PerformanceAttribution: React.FC = () => {
               } 
               value={-4.2} 
               precision={2} 
-              styles={{ content: { color: '#4ECBEE' } }} 
+              valueStyle={{ color: '#4ECBEE' }} 
               suffix="%" 
             />
           </Card>
