@@ -35,8 +35,8 @@ const activeKey = ref('1');
 
 const getMajorAllocationOption = () => ({
   tooltip: { trigger: 'axis', axisPointer: { type: 'cross', label: { backgroundColor: '#6a7985' } } },
-  legend: { data: ['现金', '股票', '债券', '基金'], top: 0 },
-  color: ['#00BFA5', '#023D7F', '#0066CC', '#4DA1FF'],
+  legend: { data: ['现金', '股票', '债券', '权益类基金', '固收类基金'], top: 0 },
+  color: ['#00BFA5', '#023D7F', '#0066CC', '#4DA1FF', '#FF9F7F'],
   grid: { left: '3%', right: '4%', bottom: '10%', top: '15%', containLabel: true },
   xAxis: { type: 'category', boundaryGap: false, data: ['2025-12', '2026-01', '2026-02', '2026-03'] },
   yAxis: { type: 'value', axisLabel: { formatter: '{value}%' } },
@@ -44,7 +44,8 @@ const getMajorAllocationOption = () => ({
     { name: '现金', type: 'line', stack: 'Total', areaStyle: {}, emphasis: { focus: 'series' }, data: [10, 12, 15, 15] },
     { name: '股票', type: 'line', stack: 'Total', areaStyle: {}, emphasis: { focus: 'series' }, data: [40, 45, 42, 45] },
     { name: '债券', type: 'line', stack: 'Total', areaStyle: {}, emphasis: { focus: 'series' }, data: [40, 35, 33, 30] },
-    { name: '基金', type: 'line', stack: 'Total', areaStyle: {}, emphasis: { focus: 'series' }, data: [10, 8, 10, 10] }
+    { name: '权益类基金', type: 'line', stack: 'Total', areaStyle: {}, emphasis: { focus: 'series' }, data: [6, 5, 6, 6] },
+    { name: '固收类基金', type: 'line', stack: 'Total', areaStyle: {}, emphasis: { focus: 'series' }, data: [4, 3, 4, 4] }
   ]
 });
 

@@ -35,13 +35,15 @@ export const mockAssetAllocation = [
   { type: '现金', value: 15000000, percentage: 15 },
   { type: '股票', value: 45000000, percentage: 45 },
   { type: '债券', value: 30000000, percentage: 30 },
-  { type: '基金', value: 10000000, percentage: 10 },
+  { type: '权益类基金', value: 6000000, percentage: 6 },
+  { type: '固收类基金', value: 4000000, percentage: 4 },
 ];
 
 export const mockPerformanceAttribution = [
   { category: '股票', allocationEffect: 0.45, selectionEffect: 1.2, interactionEffect: 0.1 },
   { category: '债券', allocationEffect: 0.2, selectionEffect: 0.3, interactionEffect: -0.05 },
-  { category: '基金', allocationEffect: -0.1, selectionEffect: 0.5, interactionEffect: 0.02 },
+  { category: '权益类基金', allocationEffect: -0.06, selectionEffect: 0.3, interactionEffect: 0.01 },
+  { category: '固收类基金', allocationEffect: -0.04, selectionEffect: 0.2, interactionEffect: 0.01 },
   { category: '现金', allocationEffect: 0.05, selectionEffect: 0, interactionEffect: 0 },
 ];
 

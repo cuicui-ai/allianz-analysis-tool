@@ -43,8 +43,9 @@ const activeKey = ref('1');
 const attributionData = [
   { key: '1', category: '股票', weight: 45.2, return: 3.87, contribution: 1.75 },
   { key: '2', category: '债券', weight: 30.5, return: 1.48, contribution: 0.45 },
-  { key: '3', category: '基金', weight: 10.1, return: 4.15, contribution: 0.42 },
-  { key: '4', category: '现金', weight: 14.2, return: 0.56, contribution: 0.08 },
+  { key: '3', category: '权益类基金', weight: 6.0, return: 4.5, contribution: 0.27 },
+  { key: '4', category: '固收类基金', weight: 4.1, return: 3.65, contribution: 0.15 },
+  { key: '5', category: '现金', weight: 14.2, return: 0.56, contribution: 0.08 },
 ];
 
 const getPerformanceTrendOption = () => {
@@ -70,7 +71,7 @@ const getPerformanceTrendOption = () => {
       axisPointer: { type: 'cross' }
     },
     legend: { 
-      data: ['安联测试产品1'],
+      data: ['汇成测试产品1'],
       bottom: 0,
       icon: 'roundRect'
     },
@@ -95,7 +96,7 @@ const getPerformanceTrendOption = () => {
     },
     series: [
       {
-        name: '安联测试产品1',
+        name: '汇成测试产品1',
         type: 'line',
         data: productData,
         smooth: true,
@@ -141,7 +142,7 @@ const getReturnContributionOption = () => ({
 
 const performanceTableColumns = [
   { title: '绩效指标', dataIndex: 'metric', key: 'metric' },
-  { title: '安联测试产品1', dataIndex: 'product', key: 'product', align: 'center' },
+  { title: '汇成测试产品1', dataIndex: 'product', key: 'product', align: 'center' },
 ];
 
 const performanceTableData = [

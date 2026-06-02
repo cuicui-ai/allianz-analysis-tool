@@ -36,7 +36,7 @@ const { RangePicker } = DatePicker;
 const { Title, Text } = Typography;
 
 const filters = ref<GlobalFilters>({
-  product: '安联测试产品1',
+  product: '汇成测试产品1',
   dateRange: [dayjs().subtract(3, 'month').format('YYYY-MM-DD'), dayjs().format('YYYY-MM-DD')],
   benchmark: '沪深300',
   unit: 'CNY',
@@ -136,7 +136,7 @@ onMounted(() => {
       >
         <div style="height: 64px; margin: 16px; display: flex; align-items: center; justify-content: center; border-bottom: 1px solid #f0f2f5">
           <Title :level="4" :style="{ color: '#023D7F', margin: 0, whiteSpace: 'nowrap', fontSize: collapsed ? '16px' : '18px' }">
-            {{ collapsed ? 'AL' : '安联投后分析工具' }}
+            {{ collapsed ? 'HC' : '汇成投后分析系统' }}
           </Title>
         </div>
         <Menu 
@@ -190,7 +190,7 @@ onMounted(() => {
                   v-model:value="filters.product"
                   style="width: 140px"
                   :options="[
-                    { value: '安联测试产品1', label: '安联测试产品1' },
+                    { value: '汇成测试产品1', label: '汇成测试产品1' },
                     { value: '测试资管产品B', label: '测试资管产品B' },
                   ]"
                   size="small"
