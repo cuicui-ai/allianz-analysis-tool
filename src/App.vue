@@ -29,6 +29,7 @@ import 'dayjs/locale/zh-cn';
 import AssetAllocation from './components/AssetAllocation.vue';
 import PerformanceAttribution from './components/PerformanceAttribution.vue';
 import ValuationMaintenance from './components/ValuationMaintenance.vue';
+import FundTypeMaintenance from './components/FundTypeMaintenance.vue';
 import { Unit, GlobalFilters } from './types.ts';
 
 const { Header, Sider, Content } = Layout;
@@ -55,6 +56,7 @@ watch(collapsed, () => {
 
 const menuItems = [
   { key: 'valuation', icon: () => h(DatabaseOutlined), label: '估值表维护' },
+  { key: 'fund-type', icon: () => h(PieChartOutlined), label: '基金类型维护' },
   { 
     key: 'analysis', 
     icon: () => h(DashboardOutlined), 
@@ -83,6 +85,7 @@ const handleMenuClick = ({ key }: { key: string }) => {
 const getPageTitle = () => {
   switch (currentPath.value) {
     case 'valuation': return '估值表维护';
+    case 'fund-type': return '基金类型维护';
     case 'attribution': return '业绩归因';
     case 'allocation': return '资产配置';
     default: return '投后分析';
@@ -223,6 +226,7 @@ onMounted(() => {
         </Header>
         <Content style="margin: 24px; padding: 0; background: transparent; min-height: 280px">
           <ValuationMaintenance v-if="currentPath === 'valuation'" />
+          <FundTypeMaintenance v-else-if="currentPath === 'fund-type'" />
           <PerformanceAttribution v-else-if="currentPath === 'attribution'" />
           <AssetAllocation v-else-if="currentPath === 'allocation'" />
         </Content>

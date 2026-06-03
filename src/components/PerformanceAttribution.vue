@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref } from 'vue';
-import { Row, Col, Card, Statistic, Table, Typography, Space, Tooltip, Tabs } from 'ant-design-vue';
+import { Row, Col, Card, Statistic, Table, Typography, Space, Tooltip, Tabs, Alert } from 'ant-design-vue';
 import { 
   ArrowUpOutlined, 
   ArrowDownOutlined, 
@@ -146,10 +146,10 @@ const performanceTableColumns = [
 ];
 
 const performanceTableData = [
-  { key: '1', metric: '累计收益率', product: '20.01%' },
-  { key: '2', metric: '年化收益', product: '4.19%' },
+  { key: '1', metric: '区间收益率', product: '20.01%' },
+  { key: '2', metric: '年化收益率', product: '4.19%' },
   { key: '3', metric: '波动率', product: '11.55%' },
-  { key: '4', metric: '夏普率', product: '0.2849' },
+  { key: '4', metric: '夏普比率', product: '0.2849' },
   { key: '5', metric: '最大回撤', product: '-28.26%' },
   { key: '6', metric: '卡玛比率', product: '0.1483' },
 ];
@@ -215,7 +215,7 @@ const returnContributionOption = ref(getReturnContributionOption());
             <template #title>
               <Space>
                 <BarChartOutlined style="color: #BC4736" />
-                <span>成立以来收益率</span>
+                <span>区间收益率</span>
               </Space>
             </template>
             <template #prefix>
@@ -235,7 +235,7 @@ const returnContributionOption = ref(getReturnContributionOption());
             <template #title>
               <Space>
                 <FallOutlined style="color: #4ECBEE" />
-                <span>成立以来最大回撤</span>
+                <span>区间最大回撤</span>
               </Space>
             </template>
           </Statistic>
@@ -292,6 +292,20 @@ const returnContributionOption = ref(getReturnContributionOption());
                 </Tooltip>
               </Space>
             </template>
+            <Alert
+              type="info"
+              show-icon
+              style="margin-bottom: 16px; background-color: #f0f7ff; border: 1px solid #adc6ff;"
+            >
+              <template #message>
+                <div class="flex flex-wrap justify-between items-center text-xs text-blue-950">
+                  <span>如需进一步拆分基金业绩贡献，请先维护基金类型</span>
+                  <a href="#fund-type" class="text-blue-600 hover:text-blue-800 font-semibold transition-colors flex items-center pr-2">
+                    点击跳转到“基金类型维护”页面 &rarr;
+                  </a>
+                </div>
+              </template>
+            </Alert>
             <Table :columns="attributionColumns" :data-source="attributionData" :pagination="false" :scroll="{ x: 'max-content' }">
               <template #bodyCell="{ column, text }">
                 <template v-if="column.key === 'return' || column.key === 'contribution'">
