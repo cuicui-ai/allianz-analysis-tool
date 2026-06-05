@@ -31,7 +31,7 @@ interface FundTypeItem {
   id: string;
   code: string;
   name: string;
-  type: '权益类' | '固收类';
+  type: '权益类' | '固收类' | '未维护';
   lastModified: string;
 }
 
@@ -43,7 +43,9 @@ const defaultFunds: FundTypeItem[] = [
   { id: '5', code: '000147', name: '易方达高等级信用债A', type: '固收类', lastModified: '2026-06-02 15:30' },
   { id: '6', code: '003382', name: '工银瑞信瑞景定期开放债券', type: '固收类', lastModified: '2026-06-03 08:00' },
   { id: '7', code: '270044', name: '广发双债添利债券A', type: '固收类', lastModified: '2026-05-30 16:12' },
-  { id: '8', code: '001925', name: '汇添富双利债券A', type: '固收类', lastModified: '2026-06-01 17:05' }
+  { id: '8', code: '001925', name: '汇添富双利债券A', type: '固收类', lastModified: '2026-06-01 17:05' },
+  { id: '9', code: '005827', name: '易方达蓝筹精选混合A (样例：待分类维护)', type: '未维护', lastModified: '未配置' },
+  { id: '10', code: '003003', name: '华夏纯债债券A (样例：待分类维护)', type: '未维护', lastModified: '未配置' }
 ];
 
 const funds = ref<FundTypeItem[]>([]);
@@ -57,14 +59,22 @@ const formRef = ref();
 const formState = ref({
   code: '',
   name: '',
-  type: '权益类' as '权益类' | '固收类'
+  type: '权益类' as '权益类' | '固收类' | '未维护'
 });
 
 const loadFunds = () => {
   const stored = localStorage.getItem('hc_fund_types_list');
   if (stored) {
     try {
-      funds.value = JSON.parse(stored);
+      const parsed = JSON.parse(stored) as FundTypeItem[];
+      // Migrate / ensure the unmaintained specimens exist in user's UI
+      if (!parsed.some(f => f.code === '005827')) {
+        parsed.push({ id: '9', code: '005827', name: '易方达蓝筹精选混合A (样例：待分类维护)', type: '未维护', lastModified: '未配置' });
+      }
+      if (!parsed.some(f => f.code === '003003')) {
+        parsed.push({ id: '10', code: '003003', name: '华夏纯债债券A (样例：待分类维护)', type: '未维护', lastModified: '未配置' });
+      }
+      funds.value = parsed;
     } catch (e) {
       funds.value = [...defaultFunds];
     }
@@ -93,11 +103,11 @@ const handleReset = () => {
 
 // Default restoration function removed to avoid unnecessary options.
 
-const handleTypeChange = (record: FundTypeItem, newType: '权益类' | '固收类') => {
+const handleTypeChange = (record: FundTypeItem, newType: '权益类' | '固收类' | '未维护') => {
   record.type = newType;
   record.lastModified = dayjs().format('YYYY-MM-DD HH:mm');
   saveToStorage();
-  message.success(`已更新 $[${record.name}] 类型为 ${newType}`);
+  message.success(`已更新 [${record.name}] 类型为 ${newType}`);
 };
 
 const showAddModal = () => {
@@ -137,12 +147,12 @@ const handleAddFund = async () => {
 const handleDelete = (id: string, name: string) => {
   funds.value = funds.value.filter(item => item.id !== id);
   saveToStorage();
-  message.success(`已删除基金 $[${name}] 关系`);
+  message.success(`已删除基金 [${name}] 关系`);
 };
 
 // Computed list
 const getFilteredFunds = () => {
-  return funds.value.filter(fund => {
+  const filtered = funds.value.filter(fund => {
     const matchSearch = 
       fund.code.includes(searchText.value) || 
       fund.name.toLowerCase().includes(searchText.value.toLowerCase());
@@ -150,12 +160,19 @@ const getFilteredFunds = () => {
     const matchType = filterType.value === 'all' || fund.type === filterType.value;
     return matchSearch && matchType;
   });
+
+  // Sort '未维护' (unmaintained) to the very top, preserving order for others
+  return [...filtered].sort((a, b) => {
+    if (a.type === '未维护' && b.type !== '未维护') return -1;
+    if (a.type !== '未维护' && b.type === '未维护') return 1;
+    return 0;
+  });
 };
 
 const columns = [
   { title: '基金代码', dataIndex: 'code', key: 'code', width: '150px' },
   { title: '基金名称', dataIndex: 'name', key: 'name' },
-  { title: '人工判定二级分类(纯手动维护)', dataIndex: 'type', key: 'type', width: '220px' },
+  { title: '手动维护基金分类', dataIndex: 'type', key: 'type', width: '220px' },
   { title: '最后维护时间', dataIndex: 'lastModified', key: 'lastModified', width: '180px' },
   { title: '操作', key: 'action', width: '120px', align: 'center' }
 ];
@@ -171,9 +188,6 @@ import { h } from 'vue';
           <div class="flex items-center space-x-2">
             <span class="text-lg font-semibold text-gray-800">基金类型手动维护</span>
           </div>
-          <Text type="secondary" class="text-xs">
-            由于大部分基金在原始估值表中只标为“基金”科目，在此界面中，用户可通过配置将对应基金归类至<b>权益类基金</b>与<b>固收类基金</b>。归类结果将直接作用于<b>“资产配置”</b>和<b>“业绩归因”</b>的多维穿透分析。
-          </Text>
         </Space>
       </template>
 
@@ -186,7 +200,7 @@ import { h } from 'vue';
       >
         <template #description>
           <div class="text-amber-800 text-xs leading-relaxed">
-            <b>穿透规则说明：</b>在估值表维护解析完成后，系统会根据下方对每一只基金代码维护的类别映射表，对大类下的“基金”进行精细化拆分类。如含有未进行手动配置类型的基金将无法细分基金的收益贡献。
+            <b>穿透规则说明：</b>在估值表维护解析完成后，系统会根据下方对每一只基金代码维护的类别映射表，对大类下的“基金”进行精细化拆分类收益贡献。如含有未进行手动配置类型的基金将无法细分基金的收益贡献。
           </div>
         </template>
       </Alert>
@@ -208,10 +222,11 @@ import { h } from 'vue';
           
           <Space>
             <Text type="secondary">基金类别：</Text>
-            <Select v-model:value="filterType" style="width: 120px">
+            <Select v-model:value="filterType" style="width: 140px">
               <Select.Option value="all">全部类型</Select.Option>
               <Select.Option value="权益类">权益类基金</Select.Option>
               <Select.Option value="固收类">固收类基金</Select.Option>
+              <Select.Option value="未维护">未维护/待处理</Select.Option>
             </Select>
           </Space>
 
@@ -239,7 +254,7 @@ import { h } from 'vue';
       >
         <template #bodyCell="{ column, record }">
           <template v-if="column.key === 'code'">
-            <Text copyable code class="font-mono">{{ record.code }}</Text>
+            <Text code class="font-mono">{{ record.code }}</Text>
           </template>
 
           <template v-if="column.key === 'name'">
@@ -247,21 +262,27 @@ import { h } from 'vue';
           </template>
 
           <template v-if="column.key === 'type'">
-            <!-- Inline fully functional select selector -->
-            <Select
-              v-model:value="record.type"
-              @change="(val) => handleTypeChange(record, val as '权益类' | '固收类')"
-              style="width: 160px"
-              size="small"
-              class="type-select-dropdown"
-            >
-              <Select.Option value="权益类">
-                <Badge color="#BC4736" text="权益类基金 (股票型/偏股)" />
-              </Select.Option>
-              <Select.Option value="固收类">
-                <Badge color="#4ECBEE" text="固收类基金 (债券型/偏债)" />
-              </Select.Option>
-            </Select>
+            <!-- Inline fully functional select selector supporting '未维护' -->
+            <div class="flex items-center space-x-1">
+              <Select
+                v-model:value="record.type"
+                @change="(val) => handleTypeChange(record, val as any)"
+                style="width: 150px"
+                size="small"
+                class="type-select-dropdown"
+                :class="{ 'border border-amber-300 rounded': record.type === '未维护' }"
+              >
+                <Select.Option v-if="record.type === '未维护'" value="未维护">
+                  <span class="text-amber-500 font-medium">未维护</span>
+                </Select.Option>
+                <Select.Option value="固收类">
+                  <Badge color="#4ECBEE" text="固收类" />
+                </Select.Option>
+                <Select.Option value="权益类">
+                  <Badge color="#BC4736" text="权益类" />
+                </Select.Option>
+              </Select>
+            </div>
           </template>
 
           <template v-if="column.key === 'lastModified'">
@@ -311,6 +332,7 @@ import { h } from 'vue';
           </Form.Item>
           <Form.Item label="收益分配二级类型" required>
             <Select v-model:value="formState.type" style="width: 100%">
+              <Select.Option value="未维护">未维护 (先加入列表，后续再指定)</Select.Option>
               <Select.Option value="权益类">权益类基金 (包括股票型、强股混合型、指数等)</Select.Option>
               <Select.Option value="固收类">固收类基金 (包括纯债型、一级二级债基、货币型等)</Select.Option>
             </Select>
