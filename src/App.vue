@@ -220,7 +220,7 @@ onMounted(() => {
             </div>
           </div>
           
-          <Space>
+          <Space v-if="currentPath !== 'fund-type'">
             <Text type="secondary" style="font-size: 12px">更新：{{ dayjs().format('MM-DD HH:mm') }}</Text>
           </Space>
         </Header>

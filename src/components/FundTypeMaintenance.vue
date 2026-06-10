@@ -49,8 +49,11 @@ const defaultFunds: FundTypeItem[] = [
 ];
 
 const funds = ref<FundTypeItem[]>([]);
-const searchText = ref('');
-const filterType = ref<string>('all');
+const searchInput = ref('');
+const searchType = ref<string>('all');
+
+const appliedSearchText = ref('');
+const appliedFilterType = ref<string>('all');
 
 // Modals and Forms
 const isModalVisible = ref(false);
@@ -92,13 +95,9 @@ onMounted(() => {
   loadFunds();
 });
 
-const handleSearch = () => {
-  // Driven automatically by computed filteredFunds below
-};
-
-const handleReset = () => {
-  searchText.value = '';
-  filterType.value = 'all';
+const handleQuery = () => {
+  appliedSearchText.value = searchInput.value;
+  appliedFilterType.value = searchType.value;
 };
 
 // Default restoration function removed to avoid unnecessary options.
@@ -154,10 +153,10 @@ const handleDelete = (id: string, name: string) => {
 const getFilteredFunds = () => {
   const filtered = funds.value.filter(fund => {
     const matchSearch = 
-      fund.code.includes(searchText.value) || 
-      fund.name.toLowerCase().includes(searchText.value.toLowerCase());
+      fund.code.includes(appliedSearchText.value) || 
+      fund.name.toLowerCase().includes(appliedSearchText.value.toLowerCase());
     
-    const matchType = filterType.value === 'all' || fund.type === filterType.value;
+    const matchType = appliedFilterType.value === 'all' || fund.type === appliedFilterType.value;
     return matchSearch && matchType;
   });
 
@@ -209,12 +208,13 @@ import { h } from 'vue';
       <div class="bg-gray-50 p-4 rounded-lg flex flex-wrap gap-4 items-center justify-between mb-4 border border-gray-100">
         <div class="flex flex-wrap gap-4 items-center">
           <Space>
-            <Text strong>条件筛选：</Text>
+            <Text strong>基金搜索：</Text>
             <Input 
-              v-model:value="searchText" 
+              v-model:value="searchInput" 
               placeholder="输入基金名称/代码" 
               style="width: 200px" 
               allow-clear
+              @pressEnter="handleQuery"
             >
               <template #suffix><SearchOutlined class="text-gray-400" /></template>
             </Input>
@@ -222,7 +222,7 @@ import { h } from 'vue';
           
           <Space>
             <Text type="secondary">基金类别：</Text>
-            <Select v-model:value="filterType" style="width: 140px">
+            <Select v-model:value="searchType" style="width: 140px">
               <Select.Option value="all">全部类型</Select.Option>
               <Select.Option value="权益类">权益类基金</Select.Option>
               <Select.Option value="固收类">固收类基金</Select.Option>
@@ -230,8 +230,9 @@ import { h } from 'vue';
             </Select>
           </Space>
 
-          <Button @click="handleReset" type="text" class="text-gray-500 hover:text-gray-700">
-            重置
+          <Button type="primary" @click="handleQuery" style="background-color: #023D7F; border-color: #023D7F">
+            <template #icon><SearchOutlined /></template>
+            查询
           </Button>
         </div>
 
